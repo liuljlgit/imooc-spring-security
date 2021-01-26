@@ -1,6 +1,2 @@
 server:
-  port: 20003
-
-spring:
-  application:
-    name: spring-security-social
+  port: 30002

@@ -1,6 +1,2 @@
 server:
-  port: 20002
-
-spring:
-  application:
-    name: spring-security-oauth2
+  port: 30003
