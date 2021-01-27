@@ -1,2 +1,26 @@
 server:
   port: 30002
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${MYSQL.HOST:localhost}:3306/${MYSQL.DATABASE:security}?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: ${MYSQL.USERNAME:root}
+    password: ${MYSQL.PASSWORD:root}
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    timeout: 30000
+    lettuce:
+      pool:
+        max-active: 300
+        max-wait: -1ms
+        max-idle: 100
+        min-idle: 20
+
+mybatis:
+  type-aliases-package: com.cloud.**.entity
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
