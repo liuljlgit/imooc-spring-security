@@ -21,10 +21,20 @@ spring:
         min-idle: 0
   session:
     store-type: none
+  security:
+    user:
+      name: admin
+      password: admin123
 
 mybatis:
   type-aliases-package: com.cloud.**.entity
   mapper-locations: classpath:mybatis/mapper/**/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
+
+#swagger配置
+swagger:
+  enable: true
+  basePackage: com.cloud
+  groupName: 安全认证服务文档
 
 
