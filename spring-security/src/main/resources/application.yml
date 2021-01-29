@@ -19,8 +19,12 @@ spring:
         max-wait: -1ms
         max-idle: 8
         min-idle: 0
+  session:
+    store-type: none
 
 mybatis:
   type-aliases-package: com.cloud.**.entity
   mapper-locations: classpath:mybatis/mapper/**/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
+
+

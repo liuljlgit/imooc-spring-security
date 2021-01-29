@@ -15,9 +15,16 @@
 
     <dependencies>
 
+        <!-- web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- oauth2 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
 
         <!-- mysql -->
@@ -108,6 +115,12 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
+        </dependency>
+
+        <!-- ftl-basic -->
+        <dependency>
+            <groupId>com.cloud.ftl</groupId>
+            <artifactId>ftl-basic</artifactId>
         </dependency>
 
     </dependencies>
