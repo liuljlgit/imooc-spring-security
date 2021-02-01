@@ -21,10 +21,10 @@ spring:
         min-idle: 0
   session:
     store-type: none
-  security:
-    user:
-      name: admin
-      password: admin123
+#  security:
+#    user:
+#      name: admin
+#      password: admin123
 
 mybatis:
   type-aliases-package: com.cloud.**.entity
