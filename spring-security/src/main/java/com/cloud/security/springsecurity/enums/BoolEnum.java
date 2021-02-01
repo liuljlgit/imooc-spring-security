@@ -32,15 +32,8 @@ public enum BoolEnum {
         return code;
     }
 
-    public void setCode(Byte code) {
-        this.code = code;
-    }
-
     public Boolean getBool() {
         return bool;
     }
 
-    public void setBool(Boolean bool) {
-        this.bool = bool;
-    }
 }
