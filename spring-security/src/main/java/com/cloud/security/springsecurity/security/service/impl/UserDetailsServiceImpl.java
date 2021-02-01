@@ -3,12 +3,14 @@ package com.cloud.security.springsecurity.security.service.impl;
 import com.cloud.ftl.ftlbasic.exception.BusiException;
 import com.cloud.security.springsecurity.entity.SysUser;
 import com.cloud.security.springsecurity.enums.BoolEnum;
+import com.cloud.security.springsecurity.enums.SecurityEnum;
 import com.cloud.security.springsecurity.security.entity.SecurityUserDetails;
 import com.cloud.security.springsecurity.security.service.IUserDetailsService;
 import com.cloud.security.springsecurity.service.ISysUserService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -38,12 +40,15 @@ public class UserDetailsServiceImpl implements IUserDetailsService {
         if(Objects.isNull(sysUser)){
             throw new UsernameNotFoundException("用户不存在");
         }
-        SecurityUserDetails securityUserDetails = new SecurityUserDetails(sysUser.getUserName(), sysUser.getPassword(),
+        SecurityUserDetails securityUserDetails = new SecurityUserDetails(
+                        sysUser.getUId(),sysUser.getRealName(),sysUser.getBirthday(),
+                        SecurityEnum.codeMap.get(sysUser.getSex()),sysUser.getCreateTime(),
+                        sysUser.getUserName(), sysUser.getPassword(),
                         BoolEnum.codeMap.getOrDefault(sysUser.getEnabled(),true),
                         BoolEnum.codeMap.getOrDefault(sysUser.getAccountNonExpired(),true),
                         BoolEnum.codeMap.getOrDefault(sysUser.getCredentialsNonExpired(),true),
                         BoolEnum.codeMap.getOrDefault(sysUser.getAccountNonLocked(),true),
-                        Lists.newArrayList());
+                        AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user"));
         return securityUserDetails;
     }
 
