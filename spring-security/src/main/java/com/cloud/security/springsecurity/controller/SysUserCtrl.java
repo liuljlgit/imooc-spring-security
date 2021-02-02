@@ -6,6 +6,9 @@ import com.cloud.ftl.ftlbasic.webEntity.CommonResp;
 import com.cloud.security.springsecurity.model.vo.RegisterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import io.swagger.annotations.*;
 import com.cloud.security.springsecurity.service.ISysUserService;
@@ -57,13 +60,6 @@ public class SysUserCtrl {
     @ApiImplicitParam(name="uId", value="主键",required = true)
     public CommonResp<Object> deleteById(@RequestParam(value="uId") @NotNull Long uId) {
         sysUserService.deleteById(uId);
-        return RespEntity.ok();
-    }
-
-    @PostMapping(value = "/register")
-    @ApiOperation(value = "用户信息注册", notes = "作者: 刘立俊")
-    public CommonResp<Object> register(@RequestBody RegisterVO register) {
-        sysUserService.register(register);
         return RespEntity.ok();
     }
 

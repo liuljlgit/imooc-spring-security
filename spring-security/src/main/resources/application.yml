@@ -60,5 +60,6 @@ security:
       - /static/**
       - /favicon.ico
       - /sysuser/**
+      - /login.html
 
 

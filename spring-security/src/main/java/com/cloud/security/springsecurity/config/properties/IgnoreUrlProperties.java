@@ -1,4 +1,4 @@
-package com.cloud.security.springsecurity.config;
+package com.cloud.security.springsecurity.config.properties;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 @ApiModel("忽略鉴权的uris")
-@ConfigurationProperties(prefix = "security.ignore")
-public class IgnoreUrlConfig {
+public class IgnoreUrlProperties {
 
     @ApiModelProperty("忽略鉴权的uri列表")
     private List<String> uris;

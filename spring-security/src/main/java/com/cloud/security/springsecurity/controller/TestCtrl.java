@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "测试模块")
 @RestController
-public class HelloCtrl {
+public class TestCtrl {
 
     @GetMapping("/hello")
-    @ApiOperation(value = "测试接口" , notes = "作者：刘立俊")
+    @ApiOperation(value = "测试接口hello" , notes = "作者：刘立俊")
     public String hello() {
         return "hello spring security";
     }

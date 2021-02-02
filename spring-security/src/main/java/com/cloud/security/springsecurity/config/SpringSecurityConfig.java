@@ -1,5 +1,7 @@
 package com.cloud.security.springsecurity.config;
 
+import com.cloud.security.springsecurity.config.properties.IgnoreUrlProperties;
+import com.cloud.security.springsecurity.config.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    IgnoreUrlConfig ignoreUrlConfig;
+    SecurityProperties securityProperties;
 
     @Bean
     PasswordEncoder getPasswordEncoder(){
@@ -21,13 +23,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        IgnoreUrlProperties ignoreProperties = securityProperties.getIgnore();
         http.csrf().disable()
-                    .formLogin()
+                .formLogin()
+                    .loginPage("/login.html")
+                    .loginProcessingUrl("/authentication/form")
                 .and()
                     .authorizeRequests()
-                    .antMatchers(ignoreUrlConfig.getUris().toArray(new String[ignoreUrlConfig.getUris().size()]))
+                    .antMatchers(ignoreProperties.getUris().toArray(new String[ignoreProperties.getUris().size()]))
                     .permitAll()
                     .anyRequest()
                     .authenticated();
+
     }
 }
