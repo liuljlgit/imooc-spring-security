@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Api(tags = "【测试模块】")
+@Api(tags = "测试模块")
 @RestController
 public class HelloCtrl {
 
