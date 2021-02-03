@@ -1,4 +1,4 @@
-package com.cloud.security.springsecurity.security.entity;
+package com.cloud.security.springsecurity.security.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -61,5 +61,6 @@ security:
       - /favicon.ico
       - /sysuser/**
       - /login.html
+      - /code/image
 
 
