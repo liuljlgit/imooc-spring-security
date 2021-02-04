@@ -1,12 +1,11 @@
 package com.cloud.security.springsecurity.security.validatecode.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.security.springsecurity.constants.SecurityConst;
 import com.cloud.security.springsecurity.security.validatecode.exception.ValidateCodeException;
-import com.cloud.security.springsecurity.security.validatecode.model.ImageCode;
 import com.cloud.security.springsecurity.security.validatecode.model.ValidateCode;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -25,8 +24,6 @@ import java.util.Objects;
  */
 @Data
 public class ValidateCodeFilter extends OncePerRequestFilter {
-
-    private static final String IMAGE_CODE_KEY = "IMAGE_CODE_KEY";
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -59,6 +56,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     private void validate(ServletWebRequest request) {
         String codeInRequest;
         String cacheKey;
+
         try {
             codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),"imageCode");
             cacheKey = ServletRequestUtils.getStringParameter(request.getRequest(),"cacheKey");
@@ -67,31 +65,30 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
         }
 
         ValidateCode codeInCache = null;
-        Object codeObj = redisTemplate.opsForHash().get(IMAGE_CODE_KEY, cacheKey);
-        if(Objects.isNull(codeObj)){
+        try {
+            codeInCache = JSONObject.parseObject(redisTemplate.opsForHash()
+                    .get(SecurityConst.IMAGE_CODE_KEY, cacheKey).toString(), ValidateCode.class);
+        } catch (Exception e) {
             throw new ValidateCodeException("验证码不存在");
-        } else {
-            codeInCache = JSONObject.parseObject(codeObj.toString(), ValidateCode.class);
         }
 
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("请填写验证码");
         }
 
-
-        if (codeInCache == null) {
+        if (Objects.isNull(codeInCache)) {
             throw new ValidateCodeException("验证码不存在");
         }
 
         if (codeInCache.isExpried()) {
-            redisTemplate.opsForHash().delete(IMAGE_CODE_KEY,cacheKey);
+            redisTemplate.opsForHash().delete(SecurityConst.IMAGE_CODE_KEY,cacheKey);
             throw new ValidateCodeException("验证码已过期，请重新获取");
         }
 
         if (!StringUtils.equals(codeInCache.getCode(), codeInRequest)) {
             throw new ValidateCodeException("验证码不正确");
         }
-        redisTemplate.opsForHash().delete(IMAGE_CODE_KEY,cacheKey);
+        redisTemplate.opsForHash().delete(SecurityConst.IMAGE_CODE_KEY,cacheKey);
     }
 
 }

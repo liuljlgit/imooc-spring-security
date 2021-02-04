@@ -10,7 +10,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 
-    @ApiModelProperty("忽略鉴权配置")
+    @ApiModelProperty("忽略鉴权配置类")
     private IgnoreUrlProperties ignore;
+
+    @ApiModelProperty("验证码配置类")
+    private ValidateCodeProperties code;
 
 }

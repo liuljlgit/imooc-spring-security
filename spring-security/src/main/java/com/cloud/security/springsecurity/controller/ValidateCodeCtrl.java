@@ -1,6 +1,8 @@
 package com.cloud.security.springsecurity.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.security.springsecurity.config.properties.SecurityProperties;
+import com.cloud.security.springsecurity.constants.SecurityConst;
 import com.cloud.security.springsecurity.security.validatecode.model.ImageCode;
 import com.cloud.security.springsecurity.security.validatecode.model.ValidateCode;
 import io.swagger.annotations.Api;
@@ -22,10 +24,11 @@ import java.util.UUID;
 @RestController
 public class ValidateCodeCtrl {
 
-    private static final String IMAGE_CODE_KEY = "IMAGE_CODE_KEY";
-
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    SecurityProperties securityProperties;
 
     @GetMapping("/code/image")
     public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -35,8 +38,8 @@ public class ValidateCodeCtrl {
         ValidateCode validateCode = new ValidateCode();
         validateCode.setCode(imageCode.getCode());
         validateCode.setExpireTime(imageCode.getExpireTime());
-        redisTemplate.opsForHash().put(IMAGE_CODE_KEY, imageCodeKey,JSONObject.toJSONString(validateCode));
-        response.setHeader("IMAGE_CODE_KEY",imageCodeKey);
+        redisTemplate.opsForHash().put(SecurityConst.IMAGE_CODE_KEY, imageCodeKey,JSONObject.toJSONString(validateCode));
+        response.setHeader(SecurityConst.IMAGE_CODE_KEY,imageCodeKey);
         ImageIO.write(imageCode.getImage(),"JPEG",response.getOutputStream());
     }
 
@@ -46,8 +49,8 @@ public class ValidateCodeCtrl {
      * @return
      */
     private ImageCode createImageCode(HttpServletRequest request) {
-        int width = 67;
-        int height = 23;
+        int width = securityProperties.getCode().getImage().getWidth();
+        int height = securityProperties.getCode().getImage().getHeight();
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         Graphics g = image.getGraphics();
@@ -67,7 +70,7 @@ public class ValidateCodeCtrl {
         }
 
         String sRand = "";
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < securityProperties.getCode().getImage().getLength(); i++) {
             String rand = String.valueOf(random.nextInt(10));
             sRand += rand;
             g.setColor(new Color(20 + random.nextInt(110), 20 + random.nextInt(110), 20 + random.nextInt(110)));
@@ -76,7 +79,7 @@ public class ValidateCodeCtrl {
 
         g.dispose();
 
-        return new ImageCode(image, sRand, 60);
+        return new ImageCode(image, sRand, securityProperties.getCode().getImage().getExpireIn());
     }
 
     /**
