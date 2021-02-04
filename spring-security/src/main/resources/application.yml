@@ -39,6 +39,7 @@ swagger:
 
 #security配置
 security:
+  rememberMeSeconds: 3600
   code:
     image:
       width: 100

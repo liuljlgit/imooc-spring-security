@@ -16,4 +16,7 @@ public class SecurityProperties {
     @ApiModelProperty("验证码配置类")
     private ValidateCodeProperties code;
 
+    @ApiModelProperty("记住我持续时间")
+    private Integer rememberMeSeconds;
+
 }

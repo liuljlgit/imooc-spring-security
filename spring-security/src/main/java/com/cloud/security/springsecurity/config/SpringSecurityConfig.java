@@ -5,16 +5,24 @@ import com.cloud.security.springsecurity.config.properties.SecurityProperties;
 import com.cloud.security.springsecurity.security.handler.AccessDeniedExceptionHandler;
 import com.cloud.security.springsecurity.security.handler.CustomAuthenticationFailureHandler;
 import com.cloud.security.springsecurity.security.handler.CustomAuthenticationSuccessHandler;
+import com.cloud.security.springsecurity.security.service.IUserDetailsService;
 import com.cloud.security.springsecurity.security.validatecode.filter.ValidateCodeFilter;
+import com.cloud.security.springsecurity.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -31,9 +39,22 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     RedisTemplate<String,String> redisTemplate;
 
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    IUserDetailsService userDetailsService;
+
     @Bean
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 
     @Override
@@ -47,6 +68,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginProcessingUrl("/authentication/form")
                     .successHandler(authenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler)
+                .and()
+                    .rememberMe()
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(securityProperties.getRememberMeSeconds())
+                    .userDetailsService(userDetailsService)
                 .and()
                     .exceptionHandling()
                     .accessDeniedHandler(new AccessDeniedExceptionHandler())
