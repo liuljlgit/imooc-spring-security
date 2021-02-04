@@ -29,12 +29,15 @@ public class ValidateCodeCtrl {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    @Resource(name = "imageCodeGenerator")
+    @Autowired
     private IValidateCodeGenerator imageCodeGenerator;
 
+    @Autowired
+    private IValidateCodeGenerator smsCodeGenerator;
+
     @GetMapping("/code/image")
-    public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ImageCode imageCode = imageCodeGenerator.generate(request);
+    public void createImageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ImageCode imageCode = (ImageCode) imageCodeGenerator.generate(request);
         String imageCodeKey = UUID.randomUUID().toString();
 
         ValidateCode validateCode = new ValidateCode();
@@ -43,6 +46,18 @@ public class ValidateCodeCtrl {
         redisTemplate.opsForHash().put(SecurityConst.IMAGE_CODE_KEY, imageCodeKey,JSONObject.toJSONString(validateCode));
         response.setHeader(SecurityConst.IMAGE_CODE_KEY,imageCodeKey);
         ImageIO.write(imageCode.getImage(),"JPEG",response.getOutputStream());
+    }
+
+    @GetMapping("/code/sms")
+    public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ValidateCode smsCode = smsCodeGenerator.generate(request);
+        String smsCodeKey = UUID.randomUUID().toString();
+
+        ValidateCode validateCode = new ValidateCode();
+        validateCode.setCode(smsCode.getCode());
+        validateCode.setExpireTime(smsCode.getExpireTime());
+        redisTemplate.opsForHash().put(SecurityConst.SMS_CODE_KEY, smsCodeKey,JSONObject.toJSONString(validateCode));
+        response.setHeader(SecurityConst.SMS_CODE_KEY,smsCodeKey);
     }
 
 }

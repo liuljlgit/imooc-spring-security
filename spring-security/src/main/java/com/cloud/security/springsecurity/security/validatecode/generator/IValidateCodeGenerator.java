@@ -1,6 +1,7 @@
 package com.cloud.security.springsecurity.security.validatecode.generator;
 
 import com.cloud.security.springsecurity.security.validatecode.model.ImageCode;
+import com.cloud.security.springsecurity.security.validatecode.model.ValidateCode;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,6 @@ public interface IValidateCodeGenerator {
      * @param request
      * @return
      */
-    ImageCode generate(HttpServletRequest request);
+    ValidateCode generate(HttpServletRequest request);
 
 }

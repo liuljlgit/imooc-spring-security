@@ -9,4 +9,6 @@ public interface SecurityConst {
 
     String IMAGE_CODE_KEY = "IMAGE_CODE_KEY";
 
+    String SMS_CODE_KEY = "SMS_CODE_KEY";
+
 }
