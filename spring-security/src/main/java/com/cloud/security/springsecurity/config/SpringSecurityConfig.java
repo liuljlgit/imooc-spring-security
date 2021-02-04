@@ -38,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter(authenticationFailureHandler,redisTemplate);
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter(authenticationFailureHandler,redisTemplate,securityProperties);
         IgnoreUrlProperties ignoreProperties = securityProperties.getIgnore();
         http.csrf().disable()
                 .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)

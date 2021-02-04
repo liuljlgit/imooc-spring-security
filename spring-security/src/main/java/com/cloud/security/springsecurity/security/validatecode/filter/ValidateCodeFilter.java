@@ -1,6 +1,7 @@
 package com.cloud.security.springsecurity.security.validatecode.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.security.springsecurity.config.properties.SecurityProperties;
 import com.cloud.security.springsecurity.constants.SecurityConst;
 import com.cloud.security.springsecurity.security.validatecode.exception.ValidateCodeException;
 import com.cloud.security.springsecurity.security.validatecode.model.ValidateCode;
@@ -29,10 +30,13 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 
     private RedisTemplate<String,String> redisTemplate;
 
+    private SecurityProperties securityProperties;
+
     public ValidateCodeFilter(AuthenticationFailureHandler authenticationFailureHandler,
-                              RedisTemplate<String, String> redisTemplate) {
+                              RedisTemplate<String, String> redisTemplate,SecurityProperties securityProperties) {
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.redisTemplate = redisTemplate;
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        if(StringUtils.equals("/authentication/form",request.getRequestURI())
+        if(StringUtils.equals(securityProperties.getCode().getImage().getUrl(),request.getRequestURI())
             && StringUtils.endsWithIgnoreCase(request.getMethod(),"post")){
             try {
                 validate(new ServletWebRequest(request));
@@ -54,9 +58,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     }
 
     private void validate(ServletWebRequest request) {
+
         String codeInRequest;
         String cacheKey;
-
         try {
             codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),"imageCode");
             cacheKey = ServletRequestUtils.getStringParameter(request.getRequest(),"cacheKey");

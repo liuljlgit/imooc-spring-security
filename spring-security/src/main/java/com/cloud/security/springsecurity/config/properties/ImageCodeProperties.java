@@ -20,4 +20,7 @@ public class ImageCodeProperties {
     @ApiModelProperty("过期时间")
     private Integer expireIn = 60;
 
+    @ApiModelProperty("需要进行拦截得url")
+    private String url;
+
 }
