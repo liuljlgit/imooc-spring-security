@@ -3,12 +3,9 @@ package com.cloud.security.springsecurity.controller;
 import com.cloud.ftl.ftlbasic.webEntity.PageBean;
 import com.cloud.ftl.ftlbasic.webEntity.RespEntity;
 import com.cloud.ftl.ftlbasic.webEntity.CommonResp;
-import com.cloud.security.springsecurity.model.vo.RegisterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import io.swagger.annotations.*;
 import com.cloud.security.springsecurity.service.ISysUserService;
