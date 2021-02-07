@@ -3,7 +3,7 @@
  */
 package com.cloud.security.springsecurity.security.modular.validatecode.enums;
 
-import com.cloud.security.springsecurity.security.constants.SecurityConst;
+import com.cloud.security.springsecurity.security.constants.SecurityConsts;
 
 /**
  * 
@@ -20,7 +20,7 @@ public enum ValidateCodeType {
 	SMS {
 		@Override
 		public String getParamNameOnValidate() {
-			return SecurityConst.DEFAULT_PARAMETER_NAME_CODE_SMS;
+			return SecurityConsts.DEFAULT_PARAMETER_NAME_CODE_SMS;
 		}
 	},
 	/**
@@ -29,7 +29,7 @@ public enum ValidateCodeType {
 	IMAGE {
 		@Override
 		public String getParamNameOnValidate() {
-			return SecurityConst.DEFAULT_PARAMETER_NAME_CODE_IMAGE;
+			return SecurityConsts.DEFAULT_PARAMETER_NAME_CODE_IMAGE;
 		}
 	};
 

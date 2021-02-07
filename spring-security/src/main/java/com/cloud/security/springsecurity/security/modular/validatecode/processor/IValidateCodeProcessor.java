@@ -7,7 +7,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  *
  * @author lijun
  */
-public interface ValidateCodeProcessor {
+public interface IValidateCodeProcessor {
 
     /**
      * 创建校验码

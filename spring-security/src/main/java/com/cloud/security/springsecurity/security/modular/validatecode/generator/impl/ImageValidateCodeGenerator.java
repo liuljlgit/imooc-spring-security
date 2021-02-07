@@ -1,6 +1,7 @@
-package com.cloud.security.springsecurity.security.modular.validatecode.generator;
+package com.cloud.security.springsecurity.security.modular.validatecode.generator.impl;
 
 import com.cloud.security.springsecurity.security.config.properties.SecurityProperties;
+import com.cloud.security.springsecurity.security.modular.validatecode.generator.IValidateCodeGenerator;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ImageCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import java.util.Random;
  * @author lijun
  */
 @Component(value = "imageCodeGenerator")
-public class ImageCodeGenerator implements IValidateCodeGenerator {
+public class ImageValidateCodeGenerator implements IValidateCodeGenerator {
 
     @Autowired
     SecurityProperties securityProperties;

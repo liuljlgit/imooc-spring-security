@@ -2,7 +2,7 @@ package com.cloud.security.springsecurity.security.modular.validatecode.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.security.springsecurity.security.config.properties.SecurityProperties;
-import com.cloud.security.springsecurity.security.constants.SecurityConst;
+import com.cloud.security.springsecurity.security.constants.SecurityConsts;
 import com.cloud.security.springsecurity.security.modular.validatecode.exception.ValidateCodeException;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ValidateCode;
 import lombok.Data;
@@ -71,7 +71,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
         ValidateCode codeInCache = null;
         try {
             codeInCache = JSONObject.parseObject(redisTemplate.opsForHash()
-                    .get(SecurityConst.IMAGE_CODE_KEY, cacheKey).toString(), ValidateCode.class);
+                    .get(SecurityConsts.IMAGE_CODE_KEY, cacheKey).toString(), ValidateCode.class);
         } catch (Exception e) {
             throw new ValidateCodeException("验证码不存在");
         }
@@ -85,14 +85,14 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
         }
 
         if (codeInCache.isExpried()) {
-            redisTemplate.opsForHash().delete(SecurityConst.IMAGE_CODE_KEY,cacheKey);
+            redisTemplate.opsForHash().delete(SecurityConsts.IMAGE_CODE_KEY,cacheKey);
             throw new ValidateCodeException("验证码已过期，请重新获取");
         }
 
         if (!StringUtils.equals(codeInCache.getCode(), codeInRequest)) {
             throw new ValidateCodeException("验证码不正确");
         }
-        redisTemplate.opsForHash().delete(SecurityConst.IMAGE_CODE_KEY,cacheKey);
+        redisTemplate.opsForHash().delete(SecurityConsts.IMAGE_CODE_KEY,cacheKey);
     }
 
 }

@@ -1,9 +1,10 @@
-package com.cloud.security.springsecurity.security.modular.validatecode.sms;
+package com.cloud.security.springsecurity.security.modular.validatecode.sms.impl;
 
+import com.cloud.security.springsecurity.security.modular.validatecode.sms.ISmsCodeSender;
 import org.springframework.stereotype.Component;
 
 @Component("SmsCodeSender")
-public class ISmsCodeSenderImpl implements ISmsCodeSender {
+public class DefaultSmsCodeSender implements ISmsCodeSender {
 
     @Override
     public void send(String mobile, String code) {

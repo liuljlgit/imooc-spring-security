@@ -6,7 +6,7 @@ package com.cloud.security.springsecurity.security.modular.validatecode.reposito
 import com.cloud.security.springsecurity.security.modular.validatecode.enums.ValidateCodeType;
 import com.cloud.security.springsecurity.security.modular.validatecode.exception.ValidateCodeException;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ValidateCode;
-import com.cloud.security.springsecurity.security.modular.validatecode.repository.ValidateCodeRepository;
+import com.cloud.security.springsecurity.security.modular.validatecode.repository.IValidateCodeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 @Component
-public class RedisValidateCodeRepository implements ValidateCodeRepository {
+public class RedisValidateCodeRepository implements IValidateCodeRepository {
 
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;

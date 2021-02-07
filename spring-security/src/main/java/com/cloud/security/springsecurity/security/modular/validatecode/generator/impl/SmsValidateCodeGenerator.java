@@ -1,6 +1,7 @@
-package com.cloud.security.springsecurity.security.modular.validatecode.generator;
+package com.cloud.security.springsecurity.security.modular.validatecode.generator.impl;
 
 import com.cloud.security.springsecurity.security.config.properties.SecurityProperties;
+import com.cloud.security.springsecurity.security.modular.validatecode.generator.IValidateCodeGenerator;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ValidateCode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author lijun
  */
 @Component(value = "smsCodeGenerator")
-public class SmsCodeGenerator implements IValidateCodeGenerator {
+public class SmsValidateCodeGenerator implements IValidateCodeGenerator {
 
     @Autowired
     SecurityProperties securityProperties;

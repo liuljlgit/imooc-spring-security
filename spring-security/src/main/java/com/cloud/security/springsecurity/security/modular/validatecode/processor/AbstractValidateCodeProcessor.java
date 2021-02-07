@@ -7,7 +7,7 @@ import com.cloud.security.springsecurity.security.modular.validatecode.enums.Val
 import com.cloud.security.springsecurity.security.modular.validatecode.exception.ValidateCodeException;
 import com.cloud.security.springsecurity.security.modular.validatecode.generator.IValidateCodeGenerator;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ValidateCode;
-import com.cloud.security.springsecurity.security.modular.validatecode.repository.ValidateCodeRepository;
+import com.cloud.security.springsecurity.security.modular.validatecode.repository.IValidateCodeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author zhailiang
  *
  */
-public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
+public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements IValidateCodeProcessor {
 
 	/**
 	 * 收集系统中所有的 {@link IValidateCodeGenerator} 接口的实现。
@@ -31,7 +31,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	private Map<String, IValidateCodeGenerator> validateCodeGenerators;
 
 	@Autowired
-	private ValidateCodeRepository validateCodeRepository;
+	private IValidateCodeRepository IValidateCodeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -72,7 +72,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	 */
 	private void save(ServletWebRequest request, C validateCode) {
 		ValidateCode code = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
-		validateCodeRepository.save(request, code, getValidateCodeType(request));
+		IValidateCodeRepository.save(request, code, getValidateCodeType(request));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 
 		ValidateCodeType codeType = getValidateCodeType(request);
 
-		C codeInRepo = (C) validateCodeRepository.get(request, codeType);
+		C codeInRepo = (C) IValidateCodeRepository.get(request, codeType);
 
 		String codeInRequest;
 		try {
@@ -120,7 +120,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 		}
 
 		if (codeInRepo.isExpried()) {
-			validateCodeRepository.remove(request, codeType);
+			IValidateCodeRepository.remove(request, codeType);
 			throw new ValidateCodeException(codeType + "验证码已过期，请重新获取");
 		}
 
@@ -128,7 +128,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 			throw new ValidateCodeException(codeType + "验证码不正确");
 		}
 		
-		validateCodeRepository.remove(request, codeType);
+		IValidateCodeRepository.remove(request, codeType);
 		
 	}
 

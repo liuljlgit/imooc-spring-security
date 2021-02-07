@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @author zhailiang
  *
  */
-public interface ValidateCodeRepository {
+public interface IValidateCodeRepository {
 
 	/**
 	 * 保存验证码
