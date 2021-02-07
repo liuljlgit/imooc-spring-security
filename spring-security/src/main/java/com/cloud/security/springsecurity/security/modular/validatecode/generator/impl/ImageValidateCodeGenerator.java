@@ -17,7 +17,7 @@ import java.util.Random;
  *
  * @author lijun
  */
-@Component(value = "imageCodeGenerator")
+@Component(value = "imageValidateCodeGenerator")
 public class ImageValidateCodeGenerator implements IValidateCodeGenerator {
 
     @Autowired

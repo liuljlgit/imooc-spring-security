@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author lijun
  */
-@Component(value = "smsCodeGenerator")
+@Component(value = "smsValidateCodeGenerator")
 public class SmsValidateCodeGenerator implements IValidateCodeGenerator {
 
     @Autowired

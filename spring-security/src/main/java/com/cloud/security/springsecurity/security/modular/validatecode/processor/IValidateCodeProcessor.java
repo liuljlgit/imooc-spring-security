@@ -1,5 +1,6 @@
 package com.cloud.security.springsecurity.security.modular.validatecode.processor;
 
+import com.cloud.security.springsecurity.security.modular.validatecode.enums.ValidateCodeType;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -14,7 +15,7 @@ public interface IValidateCodeProcessor {
      * @param request
      * @throws Exception
      */
-    void create(ServletWebRequest request) throws Exception;
+    void create(ServletWebRequest request, ValidateCodeType validateCodeType) throws Exception;
 
     /**
      * 校验验证码
@@ -22,6 +23,6 @@ public interface IValidateCodeProcessor {
      * @param servletWebRequest
      * @throws Exception
      */
-    void validate(ServletWebRequest servletWebRequest);
+    void validate(ServletWebRequest servletWebRequest, ValidateCodeType validateCodeType);
 
 }

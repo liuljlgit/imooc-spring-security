@@ -14,12 +14,23 @@ public interface SecurityConsts {
     /**
      * 默认的处理验证码的url前缀
      */
+    String VALIDATE_CODE_PROCESSOR_PREFIX_NAME = "ValidateCodeProcessor";
+
+    /**
+     * 默认的处理验证码的url前缀
+     */
+    String VALIDATE_CODE_GENERATOR_PREFIX_NAME = "ValidateCodeGenerator";
+
+    /**
+     * 默认的处理验证码的url前缀
+     */
     String DEFAULT_VALIDATE_CODE_URL_PREFIX = "/code";
 
     /**
      * 验证图片验证码时，http请求中默认的携带图片验证码信息的参数的名称
      */
     String DEFAULT_PARAMETER_NAME_CODE_IMAGE = "imageCode";
+
     /**
      * 验证短信验证码时，http请求中默认的携带短信验证码信息的参数的名称
      */

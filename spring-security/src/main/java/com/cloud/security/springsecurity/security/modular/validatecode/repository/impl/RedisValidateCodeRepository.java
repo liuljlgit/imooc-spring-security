@@ -3,16 +3,22 @@
  */
 package com.cloud.security.springsecurity.security.modular.validatecode.repository.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cloud.security.springsecurity.security.modular.validatecode.enums.ValidateCodeType;
 import com.cloud.security.springsecurity.security.modular.validatecode.exception.ValidateCodeException;
 import com.cloud.security.springsecurity.security.modular.validatecode.model.ValidateCode;
 import com.cloud.security.springsecurity.security.modular.validatecode.repository.IValidateCodeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import javax.servlet.ServletRequest;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,11 +27,12 @@ import java.util.concurrent.TimeUnit;
  * @author zhailiang
  *
  */
+@Slf4j
 @Component
 public class RedisValidateCodeRepository implements IValidateCodeRepository {
 
 	@Autowired
-	private RedisTemplate<Object, Object> redisTemplate;
+	private RedisTemplate<String, String> redisTemplate;
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +45,10 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 	 */
 	@Override
 	public void save(ServletWebRequest request, ValidateCode code, ValidateCodeType type) {
-		redisTemplate.opsForValue().set(buildKey(request, type), code, 30, TimeUnit.MINUTES);
+		ValidateCode validateCode = new ValidateCode();
+		validateCode.setCode(code.getCode());
+		validateCode.setExpireTime(code.getExpireTime());
+		redisTemplate.opsForValue().set(buildKey(request, type), JSON.toJSONString(validateCode), 30, TimeUnit.MINUTES);
 	}
 
 	/*
@@ -51,11 +61,12 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 	 */
 	@Override
 	public ValidateCode get(ServletWebRequest request, ValidateCodeType type) {
-		Object value = redisTemplate.opsForValue().get(buildKey(request, type));
+		Object value = redisTemplate.opsForValue().get(getKey(request, type));
 		if (value == null) {
 			return null;
 		}
-		return (ValidateCode) value;
+		return JSON.toJavaObject(JSON.parseObject(value.toString()),ValidateCode.class);
+		//return (ValidateCode) value;
 	}
 
 	/*
@@ -68,7 +79,14 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 	 */
 	@Override
 	public void remove(ServletWebRequest request, ValidateCodeType type) {
-		redisTemplate.delete(buildKey(request, type));
+		redisTemplate.delete(getKey(request, type));
+	}
+
+
+	private String buildKey(ServletWebRequest request, ValidateCodeType type) {
+		String deviceId = UUID.randomUUID().toString();
+		log.info("后台验证码生成得deviceId：" + deviceId);
+		return deviceId;
 	}
 
 	/**
@@ -76,11 +94,20 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 	 * @param type
 	 * @return
 	 */
-	private String buildKey(ServletWebRequest request, ValidateCodeType type) {
-		String deviceId = request.getHeader("deviceId");
-		if (StringUtils.isBlank(deviceId)) {
-			throw new ValidateCodeException("请在请求头中携带deviceId参数");
+	private String getKey(ServletWebRequest request, ValidateCodeType type) {
+		String deviceId;
+		try{
+			deviceId = ServletRequestUtils.getRequiredStringParameter((ServletRequest) request, "deviceId");
+			if(StringUtils.isBlank(deviceId)){
+				throw new RuntimeException();
+			}
+		} catch (Exception e){
+			throw new ValidateCodeException("请在请求中携带deviceId参数");
 		}
+//		String deviceId = request.getHeader("deviceId");
+//		if (StringUtils.isBlank(deviceId)) {
+//			throw new ValidateCodeException("请在请求头中携带deviceId参数");
+//		}
 		return "code:" + type.toString().toLowerCase() + ":" + deviceId;
 	}
 
