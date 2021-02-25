@@ -49,4 +49,5 @@ public class ValidateCodeCtrl {
 				.create(new ServletWebRequest(request, response),validateCodeType);
 	}
 
+
 }

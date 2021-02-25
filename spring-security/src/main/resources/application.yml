@@ -47,6 +47,10 @@ security:
       length: 6
       expireIn: 60
       url: /authentication/form
+    sms:
+      length: 4
+      expireIn: 60
+      url: /authentication/mobile
   register:
     publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeD3OIrbUGE4_CEGkGmVVLGFMhop9-RvgU18sgEH1T2Dc-2uTAtMUA5vbiPnpD8L4RxVbkMJtlx0ULbrqwCOPEcnM-Ri3h3nR6kRTRDdy82BYiANDV5UTiqZ0lul10rSvf5NjwnSxK5DeRySrOQci6nLGa654paY7RxVHpg3_oqwIDAQAB
     privateKey: MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ4Pc4ittQYTj8IQaQaZVUsYUyGin35G-BTXyyAQfVPYNz7a5MC0xQDm9uI-ekPwvhHFVuQwm2XHRQtuurAI48Rycz5GLeHedHqRFNEN3LzYFiIA0NXlROKpnSW6XXStK9_k2PCdLErkN5HJKs5ByLqcsZrrnilpjtHFUemDf-irAgMBAAECgYBUyc0cQLKe89dmLw9n7tEGW6IcpPQR9VgXNjtMlAvm8lGQcjPL_CzB8yP08bb8wyPyvH2EI175FhA_tcKHs_0aCMKBRZvZTVLYQ08SneCRhUZmMBGk3Vix0_Zs3hFaoDKNxstj1O73DUeWLy9wZFtqbNCEGZ-BkIHOqCtlOxxXQQJBAMyiyXYRAhiADfvzMhrhQNt6krHAn9kJnS6Pwmh-d7mWZdJPUYlnXCTO-K4Pg9ZqPWYhscteCePvddSeFHnmgwkCQQDFu-CrqpYhgDlGDjVEsL99jgxzcc9aKjV0s2DmDf6Zt6_jzxIoKsp7flwuM8oz0x-vAuYNUhJMTfRR6h2EY3cTAkEAtPyI5-Z1Dww60gou130_6p4HHjU6ay_ImATHsbmg1ECDf7VtbPRAl8GCShgoxzuhYDIO2MosPy9r7Id_nqzUWQJAfvImxK-JIUrr-lEG2-nJlrcKwVcw80cj-J9tN2WGrnOihdQcaRNH2c7_KV5wk6MYtUhcH_Mv8jMeBzUR7DvbZwJAL6XRW5vQnXd0QgL5s5ZOTi26BQOsY_5MKtudTxTG0hXIxtFtimlIghpBhMmiFKS9gov-zSWylyeQ9sx6PdJdHQ
@@ -69,6 +73,6 @@ security:
       - /favicon.ico
       - /sysuser/**
       - /login.html
-      - /code/image
+      - /code/**
 
 

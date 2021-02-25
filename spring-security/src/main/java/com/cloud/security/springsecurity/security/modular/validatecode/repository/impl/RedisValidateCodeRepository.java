@@ -48,7 +48,9 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 		ValidateCode validateCode = new ValidateCode();
 		validateCode.setCode(code.getCode());
 		validateCode.setExpireTime(code.getExpireTime());
-		redisTemplate.opsForValue().set(buildKey(request, type), JSON.toJSONString(validateCode), 30, TimeUnit.MINUTES);
+		String deviceId = buildKey(request, type);
+		redisTemplate.opsForValue().set(deviceId, JSON.toJSONString(validateCode), 30, TimeUnit.MINUTES);
+		log.info("验证码类型：{},生成的验证码为：{}，deviceId为：{}",type.getParamNameOnValidate(),validateCode.getCode(),deviceId);
 	}
 
 	/*
@@ -84,9 +86,7 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 
 
 	private String buildKey(ServletWebRequest request, ValidateCodeType type) {
-		String deviceId = UUID.randomUUID().toString();
-		log.info("后台验证码生成得deviceId：" + deviceId);
-		return deviceId;
+		return  UUID.randomUUID().toString();
 	}
 
 	/**
