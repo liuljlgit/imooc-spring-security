@@ -41,4 +41,14 @@ public interface SecurityConsts {
      */
     String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
 
+    /**
+     * 默认的用户名密码登录请求处理url
+     */
+    String DEFAULT_SIGN_IN_PROCESSING_URL_FORM = "/authentication/form";
+
+    /**
+     * 默认的手机验证码登录请求处理url
+     */
+    String DEFAULT_SIGN_IN_PROCESSING_URL_MOBILE = "/authentication/mobile";
+
 }

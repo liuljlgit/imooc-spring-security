@@ -68,7 +68,6 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 			return null;
 		}
 		return JSON.toJavaObject(JSON.parseObject(value.toString()),ValidateCode.class);
-		//return (ValidateCode) value;
 	}
 
 	/*
@@ -97,7 +96,7 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 	private String getKey(ServletWebRequest request, ValidateCodeType type) {
 		String deviceId;
 		try{
-			deviceId = ServletRequestUtils.getRequiredStringParameter((ServletRequest) request, "deviceId");
+			deviceId = request.getParameter("deviceId");
 			if(StringUtils.isBlank(deviceId)){
 				throw new RuntimeException();
 			}
@@ -108,7 +107,7 @@ public class RedisValidateCodeRepository implements IValidateCodeRepository {
 //		if (StringUtils.isBlank(deviceId)) {
 //			throw new ValidateCodeException("请在请求头中携带deviceId参数");
 //		}
-		return "code:" + type.toString().toLowerCase() + ":" + deviceId;
+		return deviceId;
 	}
 
 }
