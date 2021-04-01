@@ -5,6 +5,7 @@
         <id column="u_id" jdbcType="BIGINT" property="uId" />
         <result column="real_name" jdbcType="VARCHAR" property="realName" />
         <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="phone" jdbcType="BIGINT" property="phone" />
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="birthday" jdbcType="DATE" property="birthday" />
         <result column="sex" jdbcType="TINYINT" property="sex" />
@@ -16,11 +17,11 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        u_id,real_name,user_name,password,birthday,sex,enabled,account_non_expired,credentials_non_expired,account_non_locked,create_time
+        u_id,real_name,user_name,phone,password,birthday,sex,enabled,account_non_expired,credentials_non_expired,account_non_locked,create_time
     </sql>
 
     <sql id="Base_Object_List">
-        #{at.uId},#{at.realName},#{at.userName},#{at.password},#{at.birthday},#{at.sex},#{at.enabled},#{at.accountNonExpired},#{at.credentialsNonExpired},#{at.accountNonLocked},#{at.createTime}
+        #{at.uId},#{at.realName},#{at.userName},#{at.phone},#{at.password},#{at.birthday},#{at.sex},#{at.enabled},#{at.accountNonExpired},#{at.credentialsNonExpired},#{at.accountNonLocked},#{at.createTime}
     </sql>
 
     <sql id="Set_Not_Null_List">
@@ -33,6 +34,9 @@
             </if>
             <if test="ut.userName != null">
                 user_name = #{ut.userName},
+            </if>
+            <if test="ut.phone != null">
+                phone = #{ut.phone},
             </if>
             <if test="ut.password != null">
                 password = #{ut.password},
@@ -66,6 +70,7 @@
             u_id = #{ut.uId},
             real_name = #{ut.realName},
             user_name = #{ut.userName},
+            phone = #{ut.phone},
             password = #{ut.password},
             birthday = #{ut.birthday},
             sex = #{ut.sex},
@@ -108,6 +113,9 @@
         </if>
         <if test="st.userName != null">
             AND user_name = #{st.userName}
+        </if>
+        <if test="st.phone != null">
+            AND phone = #{st.phone}
         </if>
         <if test="st.password != null">
             AND password = #{st.password}
@@ -321,7 +329,7 @@
 
 
     <!--~~~~~~~~~~~~~~~~~~~~~~ custom code begin ~~~~~~~~~~~~~~~~~~~~~~-->
-    
+        
     <!--~~~~~~~~~~~~~~~~~~~~~~ custom code end ~~~~~~~~~~~~~~~~~~~~~~-->
 
 </mapper>

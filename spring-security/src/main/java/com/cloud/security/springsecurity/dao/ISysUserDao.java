@@ -14,7 +14,7 @@ import com.cloud.security.springsecurity.entity.SysUser;
 public interface ISysUserDao extends IBaseMapper<SysUser>{
 
     //------------------------ custom code begin ------------------------//
-    
+        
     //======================== custom code end ========================//
 
 }

@@ -11,6 +11,4 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface IUserDetailsService extends UserDetailsService {
 
-    void register(Register register);
-
 }

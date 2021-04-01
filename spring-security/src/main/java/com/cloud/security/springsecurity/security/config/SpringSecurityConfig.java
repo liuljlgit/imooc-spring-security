@@ -6,6 +6,7 @@ import com.cloud.security.springsecurity.security.modular.authen.handler.AccessD
 import com.cloud.security.springsecurity.security.modular.authen.handler.CustomAuthenticationFailureHandler;
 import com.cloud.security.springsecurity.security.modular.authen.handler.CustomAuthenticationSuccessHandler;
 import com.cloud.security.springsecurity.security.modular.authen.service.IUserDetailsService;
+import com.cloud.security.springsecurity.security.modular.authen.smslogin.SmsCodeAuthenticationSecurityConfig;
 import com.cloud.security.springsecurity.security.modular.validatecode.filter.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 @Configuration
@@ -39,11 +41,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
-    @Autowired
-    IUserDetailsService userDetailsService;
+    @Resource(name = "usernameLoginUserDetailsService")
+    IUserDetailsService usernameLoginUserDetailsService;
 
     @Autowired
     ValidateCodeFilter validateCodeFilter;
+
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Bean
     PasswordEncoder getPasswordEncoder(){
@@ -59,7 +64,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-//        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter(authenticationFailureHandler,redisTemplate,securityProperties);
         IgnoreUrlProperties ignoreProperties = securityProperties.getIgnore();
         http.csrf().disable()
                 .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
@@ -72,7 +76,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .rememberMe()
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(securityProperties.getRememberMeSeconds())
-                    .userDetailsService(userDetailsService)
+                    .userDetailsService(usernameLoginUserDetailsService)
                 .and()
                     .exceptionHandling()
                     .accessDeniedHandler(new AccessDeniedExceptionHandler())
@@ -82,7 +86,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(ignoreProperties.getUris().toArray(new String[ignoreProperties.getUris().size()]))
                     .permitAll()
                     .anyRequest()
-                    .authenticated();
+                    .authenticated()
+                .and()
+                    .apply(smsCodeAuthenticationSecurityConfig);
 
     }
 }

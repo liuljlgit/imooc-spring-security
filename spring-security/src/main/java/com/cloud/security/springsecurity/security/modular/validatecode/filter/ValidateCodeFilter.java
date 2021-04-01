@@ -143,42 +143,4 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         return result;
     }
 
-//    private void validate(ServletWebRequest request) {
-//
-//        String codeInRequest;
-//        String cacheKey;
-//        try {
-//            codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),"imageCode");
-//            cacheKey = ServletRequestUtils.getStringParameter(request.getRequest(),"cacheKey");
-//        } catch (ServletRequestBindingException e) {
-//            throw new ValidateCodeException("获取验证码的值失败");
-//        }
-//
-//        ValidateCode codeInCache = null;
-//        try {
-//            codeInCache = JSONObject.parseObject(redisTemplate.opsForHash()
-//                    .get(SecurityConsts.IMAGE_CODE_KEY, cacheKey).toString(), ValidateCode.class);
-//        } catch (Exception e) {
-//            throw new ValidateCodeException("验证码不存在");
-//        }
-//
-//        if (StringUtils.isBlank(codeInRequest)) {
-//            throw new ValidateCodeException("请填写验证码");
-//        }
-//
-//        if (Objects.isNull(codeInCache)) {
-//            throw new ValidateCodeException("验证码不存在");
-//        }
-//
-//        if (codeInCache.isExpried()) {
-//            redisTemplate.opsForHash().delete(SecurityConsts.IMAGE_CODE_KEY,cacheKey);
-//            throw new ValidateCodeException("验证码已过期，请重新获取");
-//        }
-//
-//        if (!StringUtils.equals(codeInCache.getCode(), codeInRequest)) {
-//            throw new ValidateCodeException("验证码不正确");
-//        }
-//        redisTemplate.opsForHash().delete(SecurityConsts.IMAGE_CODE_KEY,cacheKey);
-//    }
-
 }

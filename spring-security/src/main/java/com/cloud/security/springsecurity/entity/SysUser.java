@@ -32,6 +32,9 @@ public class SysUser extends BaseQuery {
 	@ApiModelProperty("用户名")
     private String userName;
 
+	@ApiModelProperty("手机号")
+    private Long phone;
+
 	@ApiModelProperty("密码（bcrypt加密）")
     private String password;
 
@@ -69,6 +72,10 @@ public class SysUser extends BaseQuery {
     @JsonIgnore
     @ApiModelProperty(hidden = true)
     public static final transient String USER_NAME = "user_name";
+
+    @JsonIgnore
+    @ApiModelProperty(hidden = true)
+    public static final transient String PHONE = "phone";
 
     @JsonIgnore
     @ApiModelProperty(hidden = true)
@@ -136,6 +143,18 @@ public class SysUser extends BaseQuery {
             addConditGroup(USER_NAME,opt,values[0],values[1]);
         } else {
             throw new RuntimeException("‘"+ USER_NAME + "’ 的SQL入参个数不正确 ");
+        }
+    }
+
+    public void andPhone(Opt opt,Object... values) {
+        if(values.length == 0){
+            addConditGroup(PHONE,opt);
+        } else if(values.length == 1){
+            addConditGroup(PHONE,opt,values[0]);
+        } else if(values.length == 2){
+            addConditGroup(PHONE,opt,values[0],values[1]);
+        } else {
+            throw new RuntimeException("‘"+ PHONE + "’ 的SQL入参个数不正确 ");
         }
     }
 
