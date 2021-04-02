@@ -7,11 +7,13 @@ import com.cloud.security.springsecurity.security.modular.authen.handler.CustomA
 import com.cloud.security.springsecurity.security.modular.authen.handler.CustomAuthenticationSuccessHandler;
 import com.cloud.security.springsecurity.security.modular.authen.service.IUserDetailsService;
 import com.cloud.security.springsecurity.security.modular.authen.smslogin.SmsCodeAuthenticationSecurityConfig;
+import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtTokenAuthenticationSecurityConfig;
 import com.cloud.security.springsecurity.security.modular.validatecode.filter.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,9 +52,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
+    @Autowired
+    private JwtTokenAuthenticationSecurityConfig jwtTokenAuthenticationSecurityConfig;
+
     @Bean
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    DaoAuthenticationProvider daoAuthenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(usernameLoginUserDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
+        return daoAuthenticationProvider;
     }
 
     @Bean
@@ -67,11 +80,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         IgnoreUrlProperties ignoreProperties = securityProperties.getIgnore();
         http.csrf().disable()
                 .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin()
-                    .loginPage("/login.html")
-                    .loginProcessingUrl("/authentication/form")
-                    .successHandler(authenticationSuccessHandler)
-                    .failureHandler(authenticationFailureHandler)
+                .authenticationProvider(daoAuthenticationProvider())
+                .formLogin()   //这个其实就是UsernamePasswordAuthenticationFilter.class的配置
+                    .loginPage("/login.html")   //配置登录跳转页面
+                    .loginProcessingUrl("/authentication/form") //会覆盖UsernamePasswordAuthenticationFilter.class中默认的/login拦截
+                    .successHandler(authenticationSuccessHandler)   //成功处理器
+                    .failureHandler(authenticationFailureHandler)   //失败处理器
                 .and()
                     .rememberMe()
                     .tokenRepository(persistentTokenRepository())
@@ -88,7 +102,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest()
                     .authenticated()
                 .and()
-                    .apply(smsCodeAuthenticationSecurityConfig);
+                    .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+                    .apply(jwtTokenAuthenticationSecurityConfig);
 
     }
 }

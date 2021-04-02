@@ -1,10 +1,9 @@
-package com.cloud.security.springsecurity.security.modular.authen.handler;
+package com.cloud.security.springsecurity.security.modular.authen.tokenlogin.handler;
 
 import com.cloud.ftl.ftlbasic.webEntity.CommonResp;
 import com.cloud.security.springsecurity.security.modular.validatecode.exception.ValidateCodeException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -16,9 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@Primary
 @Component
-public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class JwtTokenAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
