@@ -8,12 +8,14 @@ import com.cloud.security.springsecurity.security.modular.authen.smslogin.SmsCod
 import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.handler.JwtTokenAuthenticationFailureHandler;
 import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.handler.JwtTokenAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -38,8 +40,12 @@ public class JwtTokenAuthenticationSecurityConfig
     @Resource(name = "usernameLoginUserDetailsService")
     private IUserDetailsService usernameLoginUserDetailsService;
 
+    @Autowired
+    JwtAccessTokenFilter jwtAccessTokenFilter;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter = new JwtTokenAuthenticationFilter();
         jwtTokenAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         jwtTokenAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
@@ -50,6 +56,7 @@ public class JwtTokenAuthenticationSecurityConfig
         jwtTokenAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
         http.authenticationProvider(jwtTokenAuthenticationProvider)
-                .addFilterAfter(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAccessTokenFilter, SecurityContextPersistenceFilter.class);
     }
 }

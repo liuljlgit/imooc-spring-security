@@ -51,4 +51,9 @@ public interface SecurityConsts {
      */
     String DEFAULT_SIGN_IN_PROCESSING_URL_MOBILE = "/authentication/mobile";
 
+    /**
+     * 登录accessToken redis前缀
+     */
+    String LOGIN_ACCESS_TOKEN = "LOGIN:ACCESS_TOKEN:";
+
 }

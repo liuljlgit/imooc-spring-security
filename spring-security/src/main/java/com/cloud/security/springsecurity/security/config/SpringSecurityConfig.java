@@ -7,6 +7,8 @@ import com.cloud.security.springsecurity.security.modular.authen.handler.CustomA
 import com.cloud.security.springsecurity.security.modular.authen.handler.CustomAuthenticationSuccessHandler;
 import com.cloud.security.springsecurity.security.modular.authen.service.IUserDetailsService;
 import com.cloud.security.springsecurity.security.modular.authen.smslogin.SmsCodeAuthenticationSecurityConfig;
+import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtAccessTokenFilter;
+import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtTokenAuthenticationFilter;
 import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtTokenAuthenticationSecurityConfig;
 import com.cloud.security.springsecurity.security.modular.validatecode.filter.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -55,6 +58,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenAuthenticationSecurityConfig jwtTokenAuthenticationSecurityConfig;
 
+    @Autowired
+    JwtAccessTokenFilter jwtAccessTokenFilter;
+
     @Bean
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
@@ -86,6 +92,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginProcessingUrl("/authentication/form") //会覆盖UsernamePasswordAuthenticationFilter.class中默认的/login拦截
                     .successHandler(authenticationSuccessHandler)   //成功处理器
                     .failureHandler(authenticationFailureHandler)   //失败处理器
+                .and()  //使用token，废弃session
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .rememberMe()
                     .tokenRepository(persistentTokenRepository())
