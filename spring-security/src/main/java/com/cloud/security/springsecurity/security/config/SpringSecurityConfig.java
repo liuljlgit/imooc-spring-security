@@ -58,9 +58,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenAuthenticationSecurityConfig jwtTokenAuthenticationSecurityConfig;
 
-//    @Autowired
-//    JwtAccessTokenFilter jwtAccessTokenFilter;
-
     @Bean
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
