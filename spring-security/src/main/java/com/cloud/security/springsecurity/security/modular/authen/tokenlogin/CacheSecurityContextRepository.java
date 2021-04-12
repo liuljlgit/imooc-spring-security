@@ -4,42 +4,67 @@ import com.alibaba.fastjson.JSON;
 import com.cloud.security.springsecurity.security.constants.SecurityConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.context.HttpRequestResponseHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Objects;
 
 @Slf4j
-@Order(-999)
-@Component
-public class JwtAccessTokenFilter extends OncePerRequestFilter {
+public final class CacheSecurityContextRepository implements SecurityContextRepository {
 
-    @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
+    public CacheSecurityContextRepository(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    public boolean containsContext(HttpServletRequest request) {
+        return Objects.isNull(getSecurityContext(request));
+    }
+
+    @Override
+    public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
+        HttpServletRequest request = requestResponseHolder.getRequest();
+
+        SecurityContext context = getSecurityContext(request);
+        if (context == null) {
+            context = generateNewContext();
+        }
+
+        return context;
+    }
+
+    @Override
+    public void saveContext(SecurityContext context, HttpServletRequest request,
+                            HttpServletResponse response) {
+
+    }
+
+    protected SecurityContext generateNewContext() {
+        return SecurityContextHolder.createEmptyContext();
+    }
+
+    private SecurityContext getSecurityContext(HttpServletRequest request) {
         String accessToken = extract(request);
         if(!StringUtils.isEmpty(accessToken)){
             String authenticationJsonStr = redisTemplate.opsForValue().get(SecurityConsts.LOGIN_ACCESS_TOKEN.concat(accessToken));
             if(!StringUtils.isEmpty(authenticationJsonStr)){
-                SecurityContextHolder.getContext().setAuthentication(JSON.toJavaObject(JSON.parseObject(authenticationJsonStr), Authentication.class));
+                Authentication authentication = JSON.toJavaObject(JSON.parseObject(authenticationJsonStr), Authentication.class);
+                return new SecurityContextImpl(authentication);
             }
         }
-        filterChain.doFilter(request,response);
+        return null;
     }
 
     /**

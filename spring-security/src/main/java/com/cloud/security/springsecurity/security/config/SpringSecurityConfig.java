@@ -7,8 +7,7 @@ import com.cloud.security.springsecurity.security.modular.authen.handler.CustomA
 import com.cloud.security.springsecurity.security.modular.authen.handler.CustomAuthenticationSuccessHandler;
 import com.cloud.security.springsecurity.security.modular.authen.service.IUserDetailsService;
 import com.cloud.security.springsecurity.security.modular.authen.smslogin.SmsCodeAuthenticationSecurityConfig;
-import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtAccessTokenFilter;
-import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtTokenAuthenticationFilter;
+import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.CacheSecurityContextRepository;
 import com.cloud.security.springsecurity.security.modular.authen.tokenlogin.JwtTokenAuthenticationSecurityConfig;
 import com.cloud.security.springsecurity.security.modular.validatecode.filter.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -58,8 +58,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenAuthenticationSecurityConfig jwtTokenAuthenticationSecurityConfig;
 
-    @Autowired
-    JwtAccessTokenFilter jwtAccessTokenFilter;
+//    @Autowired
+//    JwtAccessTokenFilter jwtAccessTokenFilter;
 
     @Bean
     PasswordEncoder getPasswordEncoder(){
@@ -87,7 +87,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(daoAuthenticationProvider())
-                .formLogin()   //这个其实就是UsernamePasswordAuthenticationFilter.class的配置
+                .securityContext()
+                    .securityContextRepository(new CacheSecurityContextRepository(redisTemplate))
+                .and()
+                    .formLogin()   //这个其实就是UsernamePasswordAuthenticationFilter.class的配置
                     .loginPage("/login.html")   //配置登录跳转页面
                     .loginProcessingUrl("/authentication/form") //会覆盖UsernamePasswordAuthenticationFilter.class中默认的/login拦截
                     .successHandler(authenticationSuccessHandler)   //成功处理器

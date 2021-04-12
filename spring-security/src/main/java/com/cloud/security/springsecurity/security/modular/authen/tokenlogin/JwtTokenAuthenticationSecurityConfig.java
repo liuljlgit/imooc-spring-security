@@ -40,8 +40,8 @@ public class JwtTokenAuthenticationSecurityConfig
     @Resource(name = "usernameLoginUserDetailsService")
     private IUserDetailsService usernameLoginUserDetailsService;
 
-    @Autowired
-    JwtAccessTokenFilter jwtAccessTokenFilter;
+//    @Autowired
+//    JwtAccessTokenFilter jwtAccessTokenFilter;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -56,7 +56,6 @@ public class JwtTokenAuthenticationSecurityConfig
         jwtTokenAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
         http.authenticationProvider(jwtTokenAuthenticationProvider)
-                .addFilterAfter(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAccessTokenFilter, SecurityContextPersistenceFilter.class);
+                .addFilterAfter(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
